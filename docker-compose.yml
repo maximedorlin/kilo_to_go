@@ -1,16 +1,51 @@
+# version: '3.9'
+
+# services:
+#   springboot-soutenece:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: springboot_soutenece
+#     ports:
+#       - "8080:8080"
+#     env_file:
+#       - .env
+
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/loic_soutenece
+#       SPRING_DATASOURCE_USERNAME: postgres
+#       SPRING_DATASOURCE_PASSWORD: Default@2025
+#       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#       SPRING_JPA_SHOW_SQL: "true"
+#     depends_on:
+#       - db
+
+#   db:
+#     image: postgres:17
+#     container_name: springboot_soutenece_postgress
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_DB: loic_soutenece
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: Default@2025
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:
+
+
 version: '3.9'
 
 services:
   springboot-soutenece:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: springboot_soutenece
     ports:
       - "8080:8080"
     env_file:
       - .env
-
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/loic_soutenece
       SPRING_DATASOURCE_USERNAME: postgres
@@ -18,11 +53,14 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - spring-net
 
   db:
     image: postgres:17
-    container_name: springboot_soutenece_postgress
+    container_name: springboot_soutenece_postgres
     ports:
       - "5432:5432"
     environment:
@@ -31,6 +69,17 @@ services:
       POSTGRES_PASSWORD: Default@2025
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d loic_soutenece"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - spring-net
+
+networks:
+  spring-net:
+    driver: bridge
 
 volumes:
   postgres_data:

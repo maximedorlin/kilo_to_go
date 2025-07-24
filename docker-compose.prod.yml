@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  springboot-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
+    image: springboot-prod:latest
+    container_name: springboot_prod
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/loic_soutenece_prod
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - prod-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: postgres:17-alpine
+    container_name: postgres_prod
+    environment:
+      POSTGRES_DB: loic_soutenece_prod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    networks:
+      - prod-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d loic_soutenece_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  prod-net:
+    driver: bridge
+
+volumes:
+  pgdata_prod:

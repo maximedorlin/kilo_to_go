@@ -1,12 +1,16 @@
 
 
-# Dockerfile
+
 FROM maven:3.9.5-eclipse-temurin-21
 
-WORKDIR /spring-boot-soutenence_loic
+WORKDIR /app
 
-COPY . /spring-boot-soutenence_loic
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-RUN mvn clean install -DskipTests
+COPY src ./src
+RUN mvn package -DskipTests
 
-CMD ["mvn", "spring-boot:run"]
+CMD ["java", "-jar", "target/kilotogo-0.0.1-SNAPSHOT.jar"]
+
+

@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  springboot-app:
+    image: your-registry/springboot-prod:${TAG:-latest}
+    container_name: springboot_deploy
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/loic_soutenece_deploy
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_PROFILES_ACTIVE: prod,cloud
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+    networks:
+      - deploy-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: postgres:17-alpine
+    container_name: postgres_deploy
+    restart: always
+    environment:
+      POSTGRES_DB: loic_soutenece_deploy
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata_deploy:/var/lib/postgresql/data
+    networks:
+      - deploy-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d loic_soutenece_deploy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  deploy-net:
+    driver: bridge
+
+volumes:
+  pgdata_deploy:
