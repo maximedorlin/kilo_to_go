@@ -1,6 +1,8 @@
 package com.soutenence.kilotogo.serviceImpl;
 
+import com.soutenence.kilotogo.entity.Message;
 import com.soutenence.kilotogo.entity.Messagerie;
+import com.soutenence.kilotogo.repository.MessageRepository;
 import com.soutenence.kilotogo.repository.MessagerieRepository;
 import com.soutenence.kilotogo.service.MessagerieService;
 import org.springframework.beans.BeanUtils;
@@ -13,8 +15,11 @@ import java.util.Optional;
 public class MessagerieServiceImpl implements MessagerieService {
     private final MessagerieRepository messagerieRepository;
 
-    public MessagerieServiceImpl(MessagerieRepository messagerieRepository) {
+    private final MessageRepository messageRepository;
+
+    public MessagerieServiceImpl(MessagerieRepository messagerieRepository, MessageRepository messageRepository) {
         this.messagerieRepository = messagerieRepository;
+        this.messageRepository = messageRepository;
     }
 
     @Override
@@ -52,5 +57,18 @@ public class MessagerieServiceImpl implements MessagerieService {
             if (messagerieUpdates.getLu() != null) existingMessagerie.setLu(messagerieUpdates.getLu());
             return messagerieRepository.save(existingMessagerie);
         }).orElseThrow(() -> new RuntimeException("Messagerie not found"));
+    }
+
+    @Override
+    public Message createMessageForConversation(Long messagerieId, Message message) {
+        Messagerie conversation = messagerieRepository.findById(messagerieId)
+                .orElseThrow(() -> new RuntimeException("Conversation not found"));
+        message.setConversation(conversation);
+        return messageRepository.save(message);
+    }
+
+    @Override
+    public List<Message> getMessagesForConversation(Long messagerieId) {
+        return messageRepository.findByConversationId(messagerieId);
     }
 }

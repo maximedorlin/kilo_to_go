@@ -1,5 +1,6 @@
 package com.soutenence.kilotogo.controller;
 
+import com.soutenence.kilotogo.entity.Message;
 import com.soutenence.kilotogo.entity.Messagerie;
 import com.soutenence.kilotogo.service.MessagerieService;
 import org.springframework.http.ResponseEntity;
@@ -45,5 +46,17 @@ public class MessagerieController {
     @PatchMapping("/{id}")
     public Messagerie partialUpdateMessagerie(@PathVariable Long id, @RequestBody Messagerie messagerieUpdates) {
         return messagerieService.partialUpdateMessagerie(id, messagerieUpdates);
+    }
+
+    @PostMapping("/{messagerieId}/messages")
+    public Message createMessageForConversation(
+            @PathVariable Long messagerieId,
+            @RequestBody Message message) {
+        return messagerieService.createMessageForConversation(messagerieId, message);
+    }
+
+    @GetMapping("/{messagerieId}/messages")
+    public List<Message> getMessagesForConversation(@PathVariable Long messagerieId) {
+        return messagerieService.getMessagesForConversation(messagerieId);
     }
 }

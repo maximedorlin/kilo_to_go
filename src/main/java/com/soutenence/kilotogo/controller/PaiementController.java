@@ -46,4 +46,5 @@ public class PaiementController {
     public Paiement partialUpdatePaiement(@PathVariable Long id, @RequestBody Paiement paiementUpdates) {
         return paiementService.partialUpdatePaiement(id, paiementUpdates);
     }
+
 }

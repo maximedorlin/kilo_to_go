@@ -1,6 +1,7 @@
 package com.soutenence.kilotogo.controller;
 
 import com.soutenence.kilotogo.entity.Annonce;
+import com.soutenence.kilotogo.entity.Transaction;
 import com.soutenence.kilotogo.service.AnnonceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,4 +48,23 @@ public class AnnonceController {
     public Annonce partialUpdateAnnonce(@PathVariable Long id, @RequestBody Annonce annonceUpdates) {
         return annonceService.partialUpdateAnnonce(id, annonceUpdates);
     }
+
+    @PostMapping("/{annonceId}/transaction")
+    public Transaction createTransactionForAnnonce(
+            @PathVariable Long annonceId,
+            @RequestBody Transaction transaction) {
+        return annonceService.createTransactionForAnnonce(annonceId, transaction);
+    }
+
+    @GetMapping("/{annonceId}/transaction")
+    public ResponseEntity<Transaction> getTransactionForAnnonce(@PathVariable Long annonceId) {
+        Optional<Transaction> transaction = annonceService.getTransactionForAnnonce(annonceId);
+        return transaction.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{annonceId}/transaction")
+    public void deleteTransactionForAnnonce(@PathVariable Long annonceId) {
+        annonceService.deleteTransactionForAnnonce(annonceId);
+    }
+    
 }

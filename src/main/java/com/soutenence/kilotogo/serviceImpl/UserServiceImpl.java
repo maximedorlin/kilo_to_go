@@ -1,7 +1,12 @@
 package com.soutenence.kilotogo.serviceImpl;
 
-import com.soutenence.kilotogo.entity.User;
+import com.soutenence.kilotogo.entity.*;
+import com.soutenence.kilotogo.repository.AnnonceRepository;
 import com.soutenence.kilotogo.repository.UserRepository;
+import com.soutenence.kilotogo.repository.EvaluationRepository;
+import com.soutenence.kilotogo.repository.TransactionRepository;
+import com.soutenence.kilotogo.repository.NotificationRepository;
+
 import com.soutenence.kilotogo.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -12,8 +17,23 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private final AnnonceRepository annonceRepository;
+
+    private final EvaluationRepository evaluationRepository;
+
+    private final TransactionRepository transactionRepository;
+    private final NotificationRepository notificationRepository;
+
+    public UserServiceImpl(UserRepository userRepository,
+                           AnnonceRepository annonceRepository,
+                           EvaluationRepository evaluationRepository,
+                           TransactionRepository transactionRepository,
+                           NotificationRepository notificationRepository) {
         this.userRepository = userRepository;
+        this.annonceRepository = annonceRepository;
+        this.evaluationRepository = evaluationRepository;
+        this.transactionRepository = transactionRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override public List<User> getAllUsers() { return userRepository.findAll(); }
@@ -38,5 +58,50 @@ public class UserServiceImpl implements UserService {
             // Ajouter tous les autres champs...
             return userRepository.save(existingUser);
         }).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public List<Annonce> getUserAnnonces(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getAnnonces();
+    }
+
+    @Override
+    public Annonce createAnnonceForUser(Long userId, Annonce annonce) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        annonce.setUtilisateur(user);
+        return annonceRepository.save(annonce);
+    }
+
+    @Override
+    public List<Transaction> getUserTransactions(Long userId) {
+        return transactionRepository.findByAcheteurIdOrVendeurId(userId, userId);
+    }
+
+    @Override
+    public List<Evaluation> getUserEvaluations(Long userId) {
+        return evaluationRepository.findByEvalueId(userId);
+    }
+
+    @Override
+    public List<Notification> getUserNotifications(Long userId) {
+        return notificationRepository.findByUtilisateurId(userId);
+    }
+
+    @Override
+    public void deleteAllAnnoncesForUser(Long userId) {
+        annonceRepository.deleteByUtilisateurId(userId);
+    }
+
+    @Override
+    public void deleteAllTransactionsForUser(Long userId) {
+        transactionRepository.deleteByAcheteurIdOrVendeurId(userId, userId);
+    }
+
+    @Override
+    public void deleteTransactionForAnnonce(Long annonceId) {
+        transactionRepository.deleteByAnnonceId(annonceId);
     }
 }

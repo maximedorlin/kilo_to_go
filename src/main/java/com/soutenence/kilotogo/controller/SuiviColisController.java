@@ -46,4 +46,5 @@ public class SuiviColisController {
     public SuiviColis partialUpdateSuiviColis(@PathVariable Long id, @RequestBody SuiviColis suiviColisUpdates) {
         return suiviColisService.partialUpdateSuiviColis(id, suiviColisUpdates);
     }
+
 }
