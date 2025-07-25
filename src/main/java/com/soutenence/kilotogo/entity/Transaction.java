@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.soutenence.kilotogo.entity.enums.TransactionStatus;
+
 @Entity
 @Table(name = "Transaction")
 @Getter
@@ -52,6 +54,3 @@ public class Transaction {
     private List<Evaluation> evaluations;
 }
 
-enum TransactionStatus {
-    initie, en_attente, paye, annulee, remboursee
-}

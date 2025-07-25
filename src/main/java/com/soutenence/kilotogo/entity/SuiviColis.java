@@ -4,6 +4,8 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.soutenence.kilotogo.entity.enums.ColisStatus;
+
 @Entity
 @Table(name = "SuiviColis")
 @Getter
@@ -30,6 +32,4 @@ public class SuiviColis {
     private String commentaire;
 }
 
-enum ColisStatus {
-    preparation, en_transit, en_livraison, livre, probleme
-}
+

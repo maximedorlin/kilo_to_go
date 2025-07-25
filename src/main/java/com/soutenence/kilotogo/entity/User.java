@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.soutenence.kilotogo.entity.enums.UserStatus;
+
 @Entity
 @Table(name = "Utilisateur")
 @Getter
@@ -65,6 +67,3 @@ public class User {
     private List<Transaction> ventes;
 }
 
-enum UserStatus {
-    actif, inactif, suspendu
-}

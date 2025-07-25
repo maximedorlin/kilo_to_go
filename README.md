@@ -50,3 +50,42 @@ docker-compose -f docker-compose.prod.yml down -v
 
 # Déploiement
 docker-compose -f docker-compose.deploy.yml down -v
+
+
+
+
+
+
+
+
+
+Initiation du paiement :
+
+bash
+POST /api/paiements/initiate
+{
+  "transactionId": 123,
+  "methode": "MOMO",
+  "montant": 15000.0,
+  "phoneNumber": "+237699999999"
+}
+Réponse :
+
+json
+{
+  "id": 456,
+  "referencePaiement": "MOMO_1a2b3c4d5e6f",
+  "statut": "en_attente",
+  "informationsSupplementaires": "{\"phone\":\"+237699999999\"}"
+}
+Webhook de confirmation :
+
+bash
+POST /api/paiements/webhook/momo
+X-Signature: hmac_signature
+{
+  "reference": "MOMO_1a2b3c4d5e6f",
+  "status": "SUCCESSFUL",
+  "amount": 15000.0,
+  "transactionId": "MOMO_TRX_123456"
+}

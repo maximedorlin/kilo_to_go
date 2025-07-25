@@ -2,6 +2,7 @@ package com.soutenence.kilotogo.controller;
 
 import com.soutenence.kilotogo.entity.Paiement;
 import com.soutenence.kilotogo.service.PaiementService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/paiements")
 public class PaiementController {
-    private final PaiementService paiementService;
+ private final PaiementService paiementService;
 
     public PaiementController(PaiementService paiementService) {
         this.paiementService = paiementService;

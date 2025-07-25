@@ -4,6 +4,9 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.soutenence.kilotogo.entity.enums.PaiementMethode;
+import com.soutenence.kilotogo.entity.enums.PaiementStatus;
+
 @Entity
 @Table(name = "Paiement")
 @Getter
@@ -36,12 +39,4 @@ public class Paiement {
 
     @Column(name = "informations_supplementaires", columnDefinition = "TEXT")
     private String informationsSupplementaires;
-}
-
-enum PaiementMethode {
-    MOMO, OM, PayPal, carte_credit, especes
-}
-
-enum PaiementStatus {
-    en_attente, complete, echec, remboursee
 }

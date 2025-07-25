@@ -4,6 +4,8 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.soutenence.kilotogo.entity.enums.NotificationType;
+
 @Entity
 @Table(name = "Notification")
 @Getter
@@ -33,6 +35,4 @@ public class Notification {
     private LocalDateTime dateCreation = LocalDateTime.now();
 }
 
-enum NotificationType {
-    message, transaction, paiement, annonce, evaluation
-}
+

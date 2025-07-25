@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.soutenence.kilotogo.entity.enums.AnnonceCategorie;
+import com.soutenence.kilotogo.entity.enums.AnnonceStatus;
+
 @Entity
 @Table(name = "Annonce")
 @Getter
@@ -26,14 +29,20 @@ public class Annonce {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AnnonceCategorie categorie;
 
     @Column(nullable = false)
     private Double prix;
 
+    @Column(nullable = false)
     private String devise = "XOF";
+
+    @Column(nullable = false)
     private Double poids;
+
+    @Column(nullable = false)
     private String dimensions;
 
     @Column(name = "ville_depart", nullable = false)
@@ -48,6 +57,7 @@ public class Annonce {
     @Column(name = "date_arrivee_prevu")
     private LocalDate dateArriveePrevu;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AnnonceStatus statut = AnnonceStatus.disponible;
 
@@ -61,10 +71,6 @@ public class Annonce {
     private Transaction transaction;
 }
 
-enum AnnonceCategorie {
-    electronique, vetements, meubles, livres, autres
-}
 
-enum AnnonceStatus {
-    disponible, reserve, expedie, livre, annule
-}
+
+
